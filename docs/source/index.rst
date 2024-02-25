@@ -1,53 +1,36 @@
-.. Copyright (c) Jupyter Development Team.
-.. Distributed under the terms of the Modified BSD License.
+import numpy as np
+import matplotlib.pyplot as plt
 
-.. JupyterLab Tutorial documentation master file, created by
-   sphinx-quickstart on Tue Jun 21 16:30:09 2016.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+def logistic_equation(N, r):
+    return (r + 1) * N - r * N**2
 
-########################
-JupyterLab Documentation
-########################
+def simulate_population_growth(N0, r, num_time_steps):
+    population = np.zeros(num_time_steps + 1)
+    population[0] = N0
+    
+    for t in range(num_time_steps):
+        population[t + 1] = logistic_equation(population[t], r)
+    
+    return population
 
-Welcome to the **JupyterLab** documentation site. JupyterLab is a highly
-extensible, feature-rich notebook authoring application and editing environment,
-and is a part of `Project Jupyter <https://docs.jupyter.org/en/latest/>`_, a
-large umbrella project centered around the goal of providing tools (and `standards <https://docs.jupyter.org/en/latest/#sub-project-documentation>`_) for interactive
-computing with `computational notebooks <https://docs.jupyter.org/en/latest/#what-is-a-notebook>`_.
+# Poblaciones iniciales
+N0_values = [0.043, 0.23, 1.5, 2.8]
 
-A `computational notebook <https://docs.jupyter.org/en/latest/#what-is-a-notebook>`_
-is a shareable document that combines computer code, plain language descriptions,
-data, rich visualizations like 3D models, charts, graphs and figures, and interactive
-controls. A notebook, along with an editor like JupyterLab, provides a fast interactive
-environment for prototyping and explaining code, exploring and visualizing data, and sharing
-ideas with others.
+# Parámetro r
+r_value = 2.9
 
-JupyterLab is a sibling to other notebook authoring applications under
-the `Project Jupyter <https://docs.jupyter.org/en/latest/>`_ umbrella, like
-`Jupyter Notebook <https://jupyter-notebook.readthedocs.io/en/latest/>`_ and
-`Jupyter Desktop <https://github.com/jupyterlab/jupyterlab-desktop>`_. JupyterLab
-offers a more advanced, feature rich, customizable experience compared to
-Jupyter Notebook.
+# Número de pasos de tiempo
+num_time_steps = 20
 
-`Try JupyterLab on Binder <https://mybinder.org/v2/gh/jupyterlab/jupyterlab-demo/HEAD?urlpath=lab/tree/demo>`__.  JupyterLab follows the Jupyter `Community Guides <https://jupyter.readthedocs.io/en/latest/community/content-community.html>`__.
+# Simulación y gráfica para r = 2.9
+plt.figure(figsize=(8, 6))
 
-.. image:: ./images/jupyterlab.png
-   :align: center
-   :class: jp-screenshot shadow
-   :alt:
+for N0 in N0_values:
+    population = simulate_population_growth(N0, r_value, num_time_steps)
+    plt.plot(population[:-2], population[2:], label=f'N0 = {N0}')
 
-.. only:: comment
-
-   Alt text is intentionally left blank because the image content is decorative.
-
-See the sections below (and the top-level links above) for more information about using, extending, and contributing to JupyterLab.
-
-.. toctree::
-   :maxdepth: 2
-
-   getting_started/overview
-   user/index
-   extension/extension_dev
-   developer/contributing
-   privacy_policies
+plt.title(f'Evolución de la población (r = {r_value})')
+plt.xlabel('Nt')
+plt.ylabel('Nt+2')
+plt.legend()
+plt.show()
